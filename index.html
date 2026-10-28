@@ -1,26 +1,31 @@
 <!doctype html>
-<html data-host-mode="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>Object.defineProperty(document, "cookie", {get: function() { return ""; },set: function() {},configurable: false});</script><script type="module">(async()=>{if(typeof FileSystemFileHandle!=="undefined"&&"createWritable"in FileSystemFileHandle.prototype)return;if(!navigator.storage?.getDirectory)return;try{const{createWorker}=await import("https://esm.sh/opfs-worker");const w=await createWorker();class W{constructor(p){this.p=p;this.c=[];this.x=false}write(d){if(this.x)throw new DOMException("closed","InvalidStateError");if(typeof d==="object"&&"type"in d&&!(d instanceof Blob)&&!(d instanceof ArrayBuffer)){if(d.type==="write")this.c.push(d.data);else if(d.type==="truncate")this.c=[];return}this.c.push(d)}async close(){if(this.x)return;const b=new Blob(this.c);await w.writeFile(this.p,new Uint8Array(await b.arrayBuffer()));this.x=true;this.c=[]}abort(){this.x=true;this.c=[]}}const pF=(h,p)=>new Proxy(h,{get:(t,k)=>k==="createWritable"?async()=>new W(p):typeof t[k]==="function"?t[k].bind(t):t[k]});const pD=(h,p)=>new Proxy(h,{get:(t,k)=>{if(k==="getFileHandle")return async(n,o)=>pF(await t.getFileHandle(n,o),(p+"/"+n).replace(//+/g,"/"));if(k==="getDirectoryHandle")return async(n,o)=>pD(await t.getDirectoryHandle(n,o),(p+"/"+n).replace(//+/g,"/"));return typeof t[k]==="function"?t[k].bind(t):t[k]}});const og=navigator.storage.getDirectory.bind(navigator.storage);navigator.storage.getDirectory=async function(){return pD(await og.call(this),"/")};}catch(e){console.warn("[OPFS]",e)}})();</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><style>:root { --host-bg: rgb(14, 18, 23); --host-fg: rgb(238, 237, 228); --host-fg-muted: rgb(162, 166, 170); --host-card: rgba(255, 255, 255, 0.04); --host-card-fg: rgb(238, 237, 228); --host-input: rgba(255, 255, 255, 0.04); --host-muted: rgba(255, 255, 255, 0.04); --host-border: rgba(255, 255, 255, 0.06); --host-border-hover: rgba(255, 255, 255, 0.12); --host-primary: rgb(18, 92, 161); --host-secondary: rgba(255, 255, 255, 0.04); --host-secondary-fg: rgb(238, 237, 228); --host-success: #22c55e; --host-error: #ef4444; } * { box-sizing: border-box; margin: 0; padding: 0; } :root, html, body { width: 100%; max-width: 100%; height: auto; overflow-x: hidden; overflow-y: visible; background: transparent; font-family: Inter, system-ui, -apple-system, sans-serif; } #sandbox-content { width: 100%; } @media (max-width: 640px) { :where(#sandbox-content svg, #sandbox-content img) { max-width: 100%; height: auto; } } </style><title>Lol Diário da Livezuda — adivinhe o campeão</title><meta name="description" content="Lol Diário da Livezuda — jogo de adivinhação de campeões de League of Legends, modo infinito, criado por caeHUNTER"></head><body><div id="sandbox-content"><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
-<div id="app"><div class="boot">Carregando campeões…</div></div>
-
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lol Diário da Livezuda</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+html,body{background:#010a13;margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;color:#f0e6d2}
 #app{
   --bg:#010a13; --bg2:#050f1b; --panel:#08131f; --panel2:#0b1a2b; --cell:#121b26;
   --gold:#c8aa6e; --gold2:#f0d98c; --ink:#f0e6d2; --muted:#9a9483; --teal:#0ac8b9;
   --line:rgba(200,170,110,.22); --line2:rgba(200,170,110,.42);
   --hit:#2c6e49; --part:#8a6414;
-  max-width:700px;margin:0 auto;background:var(--bg);color:var(--ink);
-  font-family:Inter,system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;
-  border:1px solid var(--line);border-radius:18px;overflow:hidden;
-  box-shadow:0 18px 50px -22px rgba(0,0,0,.85)
+  width:100%;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.45;overflow-x:hidden
 }
 #app *{box-sizing:border-box}
-#app .wrap{max-width:640px;margin:0 auto;padding:0 20px}
+#app .shell{width:100%;max-width:1120px;margin:0 auto;padding:0 24px}
 h1,h2,h3,.brand,.dot-label{font-family:Cinzel,Georgia,serif;font-weight:600;letter-spacing:.4px}
 a{color:var(--gold2);text-decoration:none}
-.boot{padding:60px 20px;text-align:center;color:var(--gold);font-family:Cinzel,serif}
+.boot{padding:80px 20px;text-align:center;color:var(--gold);font-family:Cinzel,serif}
+.cols{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+.left,.right{min-width:0}
+@media (min-width:920px){.cols{grid-template-columns:minmax(0,1fr) 344px;gap:18px}}
 
-.nav{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(200,170,110,.07),transparent)}
+.nav{border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(200,170,110,.07),transparent)}
+.nav .inner{display:flex;align-items:center;gap:12px;padding:13px 24px;max-width:1120px;margin:0 auto}
 .nav .brand{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--ink)}
 .nav .brand b{color:var(--gold)}
 .nav .brand small{display:block;font-family:Inter,sans-serif;font-size:10px;color:var(--muted);letter-spacing:.3px}
@@ -30,19 +35,25 @@ a{color:var(--gold2);text-decoration:none}
 .pill{border:1px solid var(--line);background:rgba(10,20,40,.7);border-radius:999px;padding:3px 10px;font-size:11px;color:var(--gold2);white-space:nowrap}
 .pill.teal{border-color:rgba(10,200,185,.35);color:var(--teal)}
 
-.hero{padding:30px 20px 22px;text-align:center;position:relative;
-  background:radial-gradient(120% 90% at 50% 0%,rgba(10,200,185,.09),transparent 60%),
-             radial-gradient(90% 70% at 50% 0%,rgba(200,170,110,.10),transparent 65%)}
-.hero h1{margin:0 0 6px;font-size:29px;line-height:1.15}
-.hero h1 em{font-style:normal;color:var(--gold);display:block;font-size:15px;margin-top:6px;letter-spacing:2px}
-.hero p{margin:10px auto 0;max-width:470px;color:var(--muted);font-size:12.5px}
-.badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.hero{text-align:center;position:relative;display:flex;align-items:center;
+  background:radial-gradient(120% 120% at 50% 0%,rgba(10,200,185,.10),transparent 62%),
+             radial-gradient(90% 90% at 50% 0%,rgba(200,170,110,.12),transparent 68%)}
+.hero .inner{width:100%;max-width:1120px;margin:0 auto;padding:40px 24px 32px}
+.hero h1{margin:0 0 6px;font-size:30px;line-height:1.12}
+.hero h1 em{font-style:normal;color:var(--gold);display:block;font-size:14px;margin-top:8px;letter-spacing:2.5px}
+.hero p{margin:12px auto 0;max-width:620px;color:var(--muted);font-size:13px}
+.badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 .credit-top{margin-top:12px;font-size:11px;color:var(--muted)}
 .credit-top b{color:var(--gold2);font-weight:500}
+@media (min-width:920px){
+  .hero h1{font-size:40px}
+  .hero h1 em{font-size:16px}
+  .hero p{font-size:13.5px;max-width:680px}
+  .hero .inner{padding:56px 24px 44px}
+}
 
-.section{padding:0 20px}
 .modebar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:18px 0 12px}
-.mode{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:11px;
+.mode{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 4px;border-radius:11px;
   border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;font-family:inherit;
   font-size:11px;transition:.16s;position:relative}
 .mode svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.4}
@@ -75,6 +86,7 @@ a{color:var(--gold2);text-decoration:none}
   padding:5px 7px;color:var(--ink);cursor:pointer;text-align:left;font-size:12px;font-family:inherit;transition:.14s}
 .res:hover{border-color:var(--gold);transform:translateX(2px)}
 .res img{width:24px;height:24px;border-radius:5px;object-fit:cover}
+.res .alt{color:var(--muted);font-size:10.5px}
 
 .grid{display:grid;grid-template-columns:106px 54px 86px 90px 56px 48px 102px 42px;gap:4px;margin-top:8px}
 .head>div{font-size:9.5px;color:var(--muted);text-align:center;padding:2px;text-transform:uppercase;letter-spacing:.4px}
@@ -91,14 +103,14 @@ a{color:var(--gold2);text-decoration:none}
 .chipv.m{background:var(--gold2);color:#08131f;font-weight:600}
 @keyframes pop{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 
-.quotebox{background:var(--bg2);border-left:3px solid var(--gold);border-radius:8px;padding:13px;font-size:15px;
+.quotebox{background:var(--bg2);border-left:3px solid var(--gold);border-radius:8px;padding:15px;font-size:16px;
   font-style:italic;margin:10px 0;color:var(--ink);font-family:Cinzel,serif;line-height:1.5}
-.abilitybox{display:flex;flex-direction:column;align-items:center;gap:8px;margin:12px 0}
-.abilitybox img{width:92px;height:92px;border-radius:12px;border:2px solid var(--line2);background:var(--bg2);
-  box-shadow:0 0 22px -8px rgba(10,200,185,.5)}
+.abilitybox{display:flex;flex-direction:column;align-items:center;gap:8px;margin:14px 0}
+.abilitybox img{width:104px;height:104px;border-radius:12px;border:2px solid var(--line2);background:var(--bg2);
+  box-shadow:0 0 26px -8px rgba(10,200,185,.5)}
 .abilitybox img.gray{filter:grayscale(1)}
 .abilitybox img.rot{transform:rotate(180deg)}
-.emojis{font-size:34px;letter-spacing:9px;text-align:center;margin:14px 0;line-height:1.35}
+.emojis{font-size:38px;letter-spacing:10px;text-align:center;margin:16px 0;line-height:1.35}
 .splash{width:100%;aspect-ratio:16/9;background-color:var(--bg2);background-repeat:no-repeat;background-position:50% 50%;
   border-radius:10px;border:1px solid var(--line)}
 .toggles{display:flex;gap:12px;font-size:11px;color:var(--muted);align-items:center;margin:6px 0}
@@ -119,11 +131,11 @@ a{color:var(--gold2);text-decoration:none}
 .bar{height:6px;border-radius:999px;background:var(--cell);overflow:hidden;margin-top:10px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--teal));transition:width .3s}
 
-.celebrate{border:1px solid var(--gold);border-radius:12px;padding:12px;margin:0 0 12px;display:flex;gap:10px;
-  align-items:center;flex-wrap:wrap;background:linear-gradient(180deg,rgba(200,170,110,.16),var(--bg2));animation:pop .3s ease}
+.celebrate{border:1px solid var(--gold);border-radius:12px;padding:12px;margin:14px auto 0;max-width:1120px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:linear-gradient(180deg,rgba(200,170,110,.16),var(--bg2));animation:pop .3s ease}
 .celebrate b{font-family:Cinzel,serif;color:var(--gold2)}
 
-section.block{padding:22px 20px 0}
+section.block{padding:0}
 section.block h2{font-size:16px;margin:0 0 4px;color:var(--ink)}
 section.block .sub2{font-size:11.5px;color:var(--muted);margin-bottom:10px}
 details{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-bottom:6px}
@@ -133,25 +145,22 @@ summary::-webkit-details-marker{display:none}
 summary::after{content:"+";color:var(--muted);font-size:14px}
 details[open] summary::after{content:"–"}
 details p{margin:8px 0 0;font-size:11.5px;color:var(--muted)}
-details ol{margin:8px 0 0;padding-left:18px;font-size:11.5px;color:var(--muted)}
-details li{margin-bottom:5px}
-details code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--gold2)}
 .statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px;text-align:center}
 .stat .k{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .stat .v{font-size:19px;font-family:Cinzel,serif;color:var(--gold2);margin-top:3px}
-#codigo{margin-top:10px}
-#codigo textarea{width:100%;height:180px;background:var(--bg2);color:#cdbe91;border:1px solid var(--line);border-radius:9px;padding:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;resize:vertical}
 
-footer{margin-top:24px;border-top:1px solid var(--line);padding:18px 20px 22px;text-align:center;
+footer{margin-top:26px;border-top:1px solid var(--line);padding:20px 24px 26px;text-align:center;
   background:linear-gradient(0deg,rgba(200,170,110,.06),transparent)}
-footer .fbrand{font-family:Cinzel,serif;font-size:15px;color:var(--ink)}
+footer .fbrand{font-family:Cinzel,serif;font-size:15px;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:8px}
 footer .fcredit{margin-top:6px;font-size:12px;color:var(--muted)}
 footer .fcredit b{color:var(--gold2);font-weight:600}
-footer .fine{margin-top:10px;font-size:10.5px;color:#6f6a5c;line-height:1.6}
-footer .fbtns{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.err{padding:26px 20px;color:var(--ink)}
+footer .fbtns{margin-top:12px}
+.err{padding:60px 24px;color:var(--ink);text-align:center}
 </style>
+</head>
+<body>
+<div id="app"><div class="boot">Carregando campeões…</div></div>
 
 <script>
 const CDN='https://cdn.jsdelivr.net/gh/taitran501/loldle@main/public';
@@ -176,6 +185,11 @@ const ATTRS=[
   {k:'releaseYear',l:'Ano',t:'year'}
 ];
 const GENDER={Male:'Masculino',Female:'Feminino',Other:'Outro',M:'Masculino',F:'Feminino',X:'Outro'};
+const PT_POS={Top:'Topo',Jungle:'Selva',Middle:'Meio',Bottom:'Inferior',Support:'Suporte'};
+const PT_RANGE={Melee:'Corpo a corpo',Ranged:'À distância'};
+const PT_RES={Mana:'Mana',Manaless:'Sem mana',Energy:'Energia',Rage:'Fúria',Fury:'Fúria',Ferocity:'Ferocidade',Heat:'Calor',Courage:'Coragem',Grit:'Determinação',Shield:'Escudo',Flow:'Fluxo','Health costs':'Custo de vida',Bloodthirst:'Sede de sangue'};
+const PT_SPE={Human:'Humano',Yordle:'Yordle',Vastayan:'Vastaya',Darkin:'Darkin','God-Warrior':'Ascendido','Magically Altered':'Alterado por magia','Void-Being':'Ser do Vazio','Chemically Altered':'Alterado quimicamente',Spiritualist:'Espiritualista',Iceborn:'Nascido do gelo',Celestial:'Celestial',Revenant:'Espectro',Golem:'Golem',Brackern:'Brackern',Minotaur:'Minotauro',Troll:'Troll',Rat:'Rato',Cat:'Gato',Dragon:'Dragão',Demon:'Demônio',Spirit:'Espírito',God:'Deus',Aspect:'Aspecto',Magicborn:'Nascido da magia',Cyborg:'Ciborgue',Undead:'Morto-vivo',Unknown:'Desconhecido'};
+const PT_REG={Void:'Vazio','Bandle City':'Cidade de Bandle','Shadow Isles':'Ilhas das Sombras','Blessed Isles':'Ilhas Abençoadas'};
 const HOWTO={
   classic:'Cada tentativa mostra o quão perto você está do campeão secreto: verde = igual, dourado = parcial (valores em comum), escuro = errado. No ano, as setas ▲▼ indicam se o alvo é mais novo ou mais velho.',
   quote:'Leia a fala e descubra quem disse. A cada 3 tentativas uma dica libera: região, depois posições e gênero, depois a inicial do nome. Há um botão para ouvir a fala original.',
@@ -184,9 +198,193 @@ const HOWTO={
   splash:'Um recorte aleatório da arte do campeão (com skin sorteada). A cada erro o zoom abre até revelar a arte inteira.'
 };
 
-let CH=[],BYID={},S=null,READY=false,SPLASH_FN=null,INPUT_VAL={};
+/* ---------- falas em português ---------- */
+const FALAS={
+Aatrox:'Agora, ouçam o silêncio da aniquilação!',
+Ahri:'Você não precisa ter medo de mim.',
+Akali:'A morte vem de todas as direções.',
+Akshan:'Pode deixar, o herói tá aqui.',
+Alistar:'Nada me segura!',
+Ambessa:'A força é a única lei.',
+Amumu:'Quer ser meu amigo?',
+Anivia:'O ciclo nunca termina.',
+Annie:'Já viu o meu Tibbers?',
+Aphelios:'A lua me guia.',
+Ashe:'Eu não vou desistir. Nem você deveria.',
+AurelionSol:'As estrelas eu fiz, e posso desfazê-las.',
+Aurora:'Vamos ver o que tem do outro lado.',
+Azir:'Shurima! Seu imperador retornou!',
+Bard:'Bard... Bard... Bard.',
+Belveth:'Tudo acaba em mim.',
+Blitzcrank:'Blitzcrank na área!',
+Brand:'Vamos queimar tudo!',
+Braum:'O coração é o músculo mais forte.',
+Briar:'Tô com fome!',
+Caitlyn:'Ajustando a mira.',
+Camille:'A elegância é a única regra.',
+Cassiopeia:'Você pode me chamar de... cobra.',
+Chogath:'Você vai ser devorado.',
+Corki:'Corki na área!',
+Darius:'Noxus não tem piedade.',
+Diana:'Eu sou a lâmina da lua.',
+DrMundo:'Mundo esmaga!',
+Draven:'Você está falando com Draven!',
+Ekko:'Vamos voltar no tempo.',
+Elise:'Vem cá, mosquinha.',
+Evelynn:'Você me quer, não quer?',
+Ezreal:'Precisa de um gênio? Sou eu.',
+Fiddlesticks:'O medo... é meu.',
+Fiora:'Você é digno do meu aço?',
+Fizz:'Vamos brincar!',
+Galio:'Por Demacia!',
+Gangplank:'Eu sou o capitão agora.',
+Garen:'Por Demacia!',
+Gnar:'Gnar!',
+Gragas:'Vamos beber e brigar!',
+Graves:'Munição de sobra.',
+Gwen:'Vamos costurar isso.',
+Hecarim:'Sinta o galope.',
+Heimerdinger:'Hora de inventar!',
+Hwei:'Vamos pintar um desastre.',
+Illaoi:'Você aguenta o teste?',
+Irelia:'As lâminas dançam comigo.',
+Ivern:'A natureza te saúda.',
+Janna:'O vento me obedece.',
+JarvanIV:'Pelo rei e por Demacia!',
+Jax:'Imagine se eu tivesse uma arma de verdade.',
+Jayce:'O futuro é agora.',
+Jhin:'Tudo em quatro atos.',
+Jinx:'Pronto pra explodir?',
+Kaisa:'A segunda pele é minha.',
+Kalista:'Traição será punida.',
+Karma:'Equilíbrio acima de tudo.',
+Karthus:'Venha, a morte te espera.',
+Kassadin:'O Vazio não me assusta.',
+Katarina:'Você vai sangrar.',
+Kayle:'Eu sou a justiça.',
+Kayn:'Sombra e aço.',
+Kennen:'Você vai levar um choque.',
+Khazix:'Sinta a mudança.',
+Kindred:'Diga adeus.',
+Kled:'Cuidado com o Skaarl!',
+KogMaw:'Vou comer tudo.',
+KSante:'Você não passa de mim.',
+Leblanc:'Você acredita em ilusões?',
+LeeSin:'Sinta o dragão.',
+Leona:'Pela luz do sol.',
+Lillia:'Vamos sonhar.',
+Lissandra:'O gelo não perdoa.',
+Locke:'O tempo não me assusta.',
+Lucian:'Pela luz, eu caço.',
+Lulu:'Hora de brincar!',
+Lux:'A luz me guia!',
+Malphite:'Nada me quebra.',
+Malzahar:'O Vazio é a verdade.',
+Maokai:'A floresta se levanta.',
+MasterYi:'A lâmina é só parte do caminho.',
+Mel:'Eu vejo tudo.',
+Milio:'Fogo, mas do bom.',
+MissFortune:'Sinto o cheiro de sangue.',
+MonkeyKing:'Hora do show.',
+Mordekaiser:'Você vai me servir.',
+Morgana:'Sinta minhas correntes.',
+Naafiri:'Corram com a matilha.',
+Nami:'A maré me guia.',
+Nasus:'A areia lembra.',
+Nautilus:'O abismo chama.',
+Neeko:'Neeko quer brincar.',
+Nidalee:'Sinta a caçada.',
+Nilah:'Vamos dançar.',
+Nocturne:'Sinta o medo.',
+Nunu:'Nunu e Willump!',
+Olaf:'Eu quero morrer lutando.',
+Orianna:'Tudo no seu lugar.',
+Ornn:'Sai da frente.',
+Pantheon:'Eu sou a lança.',
+Poppy:'O herói... acho que sou eu.',
+Pyke:'Sua vez na lista.',
+Qiyana:'Você é digno de me servir?',
+Quinn:'Vamos, Valor.',
+Rakan:'Vamos dançar!',
+Rammus:'Tá bom.',
+RekSai:'Sinta a terra.',
+Rell:'Ninguém me derruba.',
+Renata:'Todos trabalham pra mim.',
+Renekton:'Carne fresca!',
+Rengar:'Um caçador nunca para.',
+Riven:'Eu quebrei a lâmina... e a esperança.',
+Rumble:'Ninguém mexe com o Rumble.',
+Ryze:'Os pergaminhos são meu fardo.',
+Samira:'Vamos com estilo.',
+Sejuani:'Sinta o frio.',
+Senna:'Minha arma é a luz.',
+Seraphine:'Você ouve a música?',
+Sett:'Vem cá, chefinho.',
+Shaco:'Quer brincar?',
+Shen:'Equilíbrio em todas as coisas.',
+Shyvana:'Sinta a fúria do dragão.',
+Singed:'Não me siga.',
+Sion:'Guerra! Sangue!',
+Sivir:'Eu luto por moedas.',
+Skarner:'Eu guardo a memória.',
+Smolder:'Mamãe me ensinou a cuspir fogo!',
+Sona:'Sinta a música.',
+Soraka:'Eu cuido de você.',
+Swain:'O império prevalece.',
+Sylas:'Eu pego a sua magia.',
+Syndra:'Minha vontade é lei.',
+TahmKench:'Você me deve um favor.',
+Taliyah:'A terra me escuta.',
+Talon:'Você não vai me ver.',
+Taric:'Brilhe como as estrelas.',
+Teemo:'Tamanho não é documento.',
+Thresh:'Sua alma é minha.',
+Tristana:'Bum! Lá vai.',
+Trundle:'O frio me obedece.',
+Tryndamere:'Minha raiva é minha força!',
+TwistedFate:'Vamos dar as cartas.',
+Twitch:'Sujeira, mas do bom.',
+Udyr:'Sinto os espíritos.',
+Urgot:'A ordem é sobre a morte.',
+Varus:'Cinco flechas, uma alma.',
+Vayne:'A noite é minha caçada.',
+Veigar:'Eu sou o pequeno mestre do mal!',
+Velkoz:'A informação é tudo.',
+Vex:'Tudo é tão... sem graça.',
+Vi:'Quebrar coisas é meu trabalho.',
+Viego:'Isolde...',
+Viktor:'A evolução é inevitável.',
+Vladimir:'Sinta o sangue.',
+Volibear:'O trovão anuncia.',
+Warwick:'Sinto o cheiro do sangue.',
+Xayah:'As penas voam.',
+Xerath:'O poder é meu por direito.',
+XinZhao:'Por Demacia, até a morte.',
+Yasuo:'Sigo o vento.',
+Yone:'Eu caço os demônios.',
+Yorick:'A donzela sussurra.',
+Yunara:'Vamos iluminar isso.',
+Yuumi:'Miau!',
+Zaahen:'Pela glória esquecida.',
+Zac:'Vamos pular!',
+Zed:'A sombra me obedece.',
+Zeri:'Sinto a corrente.',
+Ziggs:'Bum! Bum!',
+Zilean:'Tempo é tudo.',
+Zoe:'Vamos fazer traquinagem!',
+Zyra:'Sinta os espinhos.'
+};
+
+let CH=[],BYID={},S=null,READY=false,SPLASH_FN=null,INPUT_VAL={},LOC={},LOC_BAD={};
+const LOC_SRC=[
+  id=>'https://cdn.jsdelivr.net/gh/CommunityDragon/Data@latest/plugins/rcp-be-lol-game-data/global/pt_br/v1/champions/'+id+'.json',
+  id=>'https://cdn.jsdelivr.net/gh/CommunityDragon/Data@master/plugins/rcp-be-lol-game-data/global/pt_br/v1/champions/'+id+'.json',
+  id=>'https://ddragon.leagueoflegends.com/cdn/15.1.1/data/pt_BR/champion/'+id+'.json'
+];
 
 function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
+function tr(map,v){return map[v]||v;}
+function trList(map,a){return (a||[]).map(x=>tr(map,x));}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function fresh(){return {v:1,cycle:1,completed:[],pools:{},rounds:{},stats:{solved:0,streak:0,best:0,guesses:0,skips:0},mode:'classic',opts:{gray:false,rot:false,howto:{}},celebrate:false};}
 function loadState(){
@@ -200,8 +398,39 @@ function loadState(){
 }
 function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
 
+/* ---------- nomes oficiais em pt-BR ---------- */
+function parseLoc(raw,id){
+  let d=raw&&raw.data?(raw.data[id]||raw.data[Object.keys(raw.data)[0]]):raw;
+  if(!d||typeof d!=='object')return null;
+  const spells=(d.spells||[]).map(s=>s&&s.name).filter(Boolean);
+  const passive=(d.passive&&d.passive.name)?d.passive.name:'';
+  const skins=(d.skins||[]).map(s=>{
+    const num=(s.num!=null)?s.num:((s.id!=null)?s.id%1000:null);
+    return {num:num,name:s.name||''};
+  }).filter(s=>s.num!=null&&s.name);
+  return {name:d.name||'',title:d.title||'',abilities:[passive].concat(spells),skins:skins};
+}
+function loadLoc(id){
+  if(LOC[id]||LOC_BAD[id]||!BYID[id])return;
+  let i=0;
+  const tryNext=()=>{
+    if(i>=LOC_SRC.length){LOC_BAD[id]=1;return;}
+    const src=LOC_SRC[i++];
+    fetch(src(id)).then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>{
+      const p=parseLoc(j,id);
+      if(!p||(!p.title&&!p.skins.length))throw 0;
+      LOC[id]=p; if(READY)render();
+    }).catch(tryNext);
+  };
+  tryNext();
+}
+function locName(c){const l=LOC[c.id];return (l&&l.name)?l.name:'';}
+function locTitle(c){const l=LOC[c.id];return (l&&l.title)?l.title:(c.title||'');}
+function locAbility(c,i){const l=LOC[c.id];if(l&&l.abilities&&l.abilities[i])return l.abilities[i];return ((c.abilities||[])[i]||{}).name||'?';}
+function locSkin(c,num,fallback){const l=LOC[c.id];if(l&&l.skins){const s=l.skins.filter(x=>x.num===num)[0];if(s&&s.name)return s.name;}return fallback;}
+
 function champIdsForMode(m){
-  if(m==='quote')return CH.filter(c=>c.quote&&c.quote.text).map(c=>c.id);
+  if(m==='quote')return CH.filter(c=>FALAS[c.id]||(c.quote&&c.quote.text)).map(c=>c.id);
   if(m==='ability')return CH.filter(c=>c.abilities&&c.abilities.length).map(c=>c.id);
   if(m==='emoji')return CH.filter(c=>c.emojis&&c.emojis.length>=3).map(c=>c.id);
   if(m==='splash')return CH.filter(c=>c.skins&&c.skins.length).map(c=>c.id);
@@ -219,6 +448,7 @@ function ensureAllPools(){MODES.forEach(m=>ensurePool(m.id));}
 function remaining(m){ensurePool(m);return S.pools[m].length+(S.rounds[m]&&S.rounds[m].status==='playing'?1:0);}
 
 function quoteFor(c){
+  if(FALAS[c.id])return FALAS[c.id];
   const arr=(c.quotes||[]).filter(q=>q.text&&q.text.length>14&&!/\b(laughs|grunts|snarls|gasps|groans|sighs|yells|roars|chuckles|chants)\b/i.test(q.text));
   if(arr.length&&Math.random()<0.45)return arr[Math.floor(Math.random()*arr.length)].text;
   return (c.quote&&c.quote.text)||(arr[0]&&arr[0].text)||'…';
@@ -233,6 +463,7 @@ function startRound(m){
   if(m==='splash'){const sk=(c.skins||[]).filter(s=>s.num!==0);
     r.skin=(Math.random()<0.5&&sk.length)?sk[Math.floor(Math.random()*sk.length)]:((c.skins||[])[0]||null);}
   S.rounds[m]=r; INPUT_VAL[m]=''; save();
+  loadLoc(id);
 }
 function onRoundEnd(m){
   if((S.pools[m]||[]).length===0){
@@ -250,7 +481,7 @@ function submitGuess(m,id){
 function giveUp(m){const r=S.rounds[m];if(!r||r.status!=='playing')return;
   r.status='lost';S.stats.skips++;S.stats.streak=0;onRoundEnd(m);save();render();}
 function nextRound(m){if(S.celebrate)S.celebrate=false;startRound(m);save();render();}
-function setMode(m){S.mode=m;if(!S.rounds[m])startRound(m);save();render();}
+function setMode(m){S.mode=m;if(!S.rounds[m])startRound(m);loadLoc(S.rounds[m].target);save();render();}
 function dismiss(){S.celebrate=false;save();render();}
 function resetAll(){S=fresh();ensureAllPools();MODES.forEach(x=>startRound(x.id));save();render();}
 function toggleOpt(k){S.opts[k]=!S.opts[k];save();render();}
@@ -292,42 +523,41 @@ function render(){
   if(!READY){app.innerHTML='<div class="boot">Carregando campeões…</div>';return;}
   if(!S.rounds[S.mode])startRound(S.mode);
   ensureAllPools();
-  app.innerHTML=nav()+hero()+main()+howtoBlock()+publishBlock()+statsBlock()+footer();
+  loadLoc(S.rounds[S.mode].target);
+  app.innerHTML=nav()+hero()+'<main class="shell"><div class="cols"><div class="left">'+leftCol()+'</div><div class="right">'+rightCol()+'</div></div></main>'+footer();
   bind();
 }
 function nav(){
-  return '<header class="nav">'
+  return '<header class="nav"><div class="inner">'
   +'<div class="brand">'+emblem(26)+'<div><b>'+SITE+'</b><small>adivinhe o campeão · modo infinito</small></div></div>'
-  +'<nav class="links"><a class="lnk" href="#como-jogar">como jogar</a><a class="lnk" href="#publicar">compartilhar</a>'
-  +'<a class="lnk" href="#estatisticas">estatísticas</a>'
-  +'<span class="pill">ciclo '+S.cycle+'</span><span class="pill teal">'+S.completed.length+'/5 desafios</span></nav></header>';
+  +'<nav class="links"><a class="lnk" href="#como-jogar">como jogar</a><a class="lnk" href="#estatisticas">estatísticas</a>'
+  +'<span class="pill">ciclo '+S.cycle+'</span><span class="pill teal">'+S.completed.length+'/5 desafios</span></nav></div></header>';
 }
 function hero(){
-  let h='<section class="hero"><h1>'+SITE+'<em>5 desafios · 173 campeões · sem limite diário</em></h1>'
-  +'<p>Adivinhe o campeão por atributos, falas, habilidades, emojis ou arte. Complete todos os desafios e os campeões voltam para a fila — o jogo nunca acaba.</p>'
+  let h='<section class="hero"><div class="inner"><h1>'+SITE+'<em>5 desafios · 173 campeões · sem limite diário</em></h1>'
+  +'<p>Lolzudo diariozudo da livezuda do yiokzudo neguxo pretuxo</p>'
   +'<div class="badges"><span class="pill">'+CH.length+' campeões</span><span class="pill">5 modos</span>'
-  +'<span class="pill teal">progresso salvo</span><span class="pill">criado por '+AUTHOR+'</span></div>'
-  +'<div class="credit-top">um projeto de fã, feito por <b>'+AUTHOR+'</b></div></section>';
+  +'<span class="pill teal">tudo em português</span><span class="pill">criado por '+AUTHOR+'</span></div>'
+  +'<div class="credit-top">um projeto de fã, feito por <b>'+AUTHOR+'</b></div></div></section>';
   if(S.celebrate){
-    h+='<div class="wrap"><div class="celebrate"><span style="font-size:20px;color:#c8aa6e">★</span>'
+    h+='<div class="celebrate"><span style="font-size:20px;color:#c8aa6e">★</span>'
     +'<div><b>Ciclo '+S.cycle+' concluído!</b><div class="hint" style="margin:0">Você completou os 5 desafios — todos os campeões foram resetados.</div></div>'
-    +'<button class="btn ghost" style="margin-left:auto" onclick="dismiss()">Fechar</button></div></div>';
+    +'<button class="btn ghost" style="margin-left:auto" onclick="dismiss()">Fechar</button></div>';
   }
   return h;
 }
+function leftCol(){
+  return modebar()+'<div class="card"><h3>Desafio · '+MODES.filter(x=>x.id===S.mode)[0].label+'</h3>'
+  +'<div class="lead">'+HOWTO[S.mode]+'</div>'
+  +panel(S.mode,S.rounds[S.mode],BYID[S.rounds[S.mode].target]||{})
+  +status(S.mode,S.rounds[S.mode],BYID[S.rounds[S.mode].target]||{})+'</div>';
+}
+function rightCol(){return cycleCard()+statsBlock()+howtoBlock();}
 function modebar(){
   return '<div class="modebar">'+MODES.map(m=>{
     const cls=(S.mode===m.id?' active':'')+(S.completed.includes(m.id)?' done':'');
     return '<button class="mode'+cls+'" onclick="setMode(\''+m.id+'\')">'+icon(m.icon)+'<span>'+m.label+'</span><span class="cnt">'+remaining(m.id)+' restam</span></button>';
   }).join('')+'</div>';
-}
-function main(){
-  const m=S.mode,r=S.rounds[m],t=BYID[r.target]||{};
-  let inner=panel(m,r,t)+status(m,r,t);
-  return '<div class="wrap">'+modebar()
-  +'<div class="card"><h3>Desafio · '+MODES.filter(x=>x.id===m)[0].label+'</h3>'
-  +'<div class="lead">'+HOWTO[m]+'</div>'+inner+'</div>'
-  +cycleCard()+'</div>';
 }
 function cycleCard(){
   const pct=Math.round(S.completed.length/MODES.length*100);
@@ -354,13 +584,14 @@ function panel(m,r,t){
           const gv=g.releaseYear,tv=t.releaseYear;
           h+='<div class="cell '+(gv===tv?'hit':(Math.abs(gv-tv)<=3?'part':'miss'))+'"><span>'+(gv||'?')+'</span>'+(gv===tv?'':'<span class="arrow">'+(tv>gv?'▲':'▼')+'</span>')+'</div>';
         }else if(a.t==='single'){
-          const gv=g[a.k]||'—';
-          h+='<div class="cell '+(gv===t[a.k]?'hit':'miss')+'">'+(GENDER[gv]||gv)+'</div>';
+          const gv=g[a.k]||'—',map=a.k==='gender'?GENDER:(a.k==='resource'?PT_RES:{});
+          h+='<div class="cell '+(gv===t[a.k]?'hit':'miss')+'">'+(map[gv]||gv)+'</div>';
         }else{
+          const map=a.k==='positions'?PT_POS:(a.k==='species'?PT_SPE:(a.k==='regions'?PT_REG:PT_RANGE));
           const gv=g[a.k]||[],tv=t[a.k]||[];
           const inter=gv.filter(x=>tv.includes(x));
           h+='<div class="cell '+((inter.length===gv.length&&gv.length===tv.length)?'hit':(inter.length?'part':'miss'))+'">'
-          +(gv.map(v=>'<span class="chipv'+(tv.includes(v)?' m':'')+'">'+v+'</span>').join('')||'—')+'</div>';
+          +(gv.map(v=>'<span class="chipv'+(tv.includes(v)?' m':'')+'">'+tr(map,v)+'</span>').join('')||'—')+'</div>';
         }
       }
     }
@@ -368,19 +599,20 @@ function panel(m,r,t){
   }
   if(m==='quote'){
     let h='<div class="quotebox">“'+(r.quote||'…')+'”</div>';const g=r.guesses.length;
-    if(g>=3)h+='<div class="hint">dica 1 · região: <b>'+((t.regions||[]).join(', ')||'—')+'</b></div>';
-    if(g>=5)h+='<div class="hint">dica 2 · posições: <b>'+((t.positions||[]).join(', ')||'—')+'</b> · gênero: <b>'+(GENDER[t.gender]||t.gender||'—')+'</b></div>';
+    if(g>=3)h+='<div class="hint">dica 1 · região: <b>'+(trList(PT_REG,t.regions).join(', ')||'—')+'</b></div>';
+    if(g>=5)h+='<div class="hint">dica 2 · posições: <b>'+(trList(PT_POS,t.positions).join(', ')||'—')+'</b> · gênero: <b>'+(GENDER[t.gender]||t.gender||'—')+'</b></div>';
     if(g>=7)h+='<div class="hint">dica 3 · o nome começa com <b>'+t.name[0]+'</b> e tem '+t.name.replace(/[^A-Za-z]/g,'').length+' letras</div>';
-    if(r.status==='playing'&&g>=2)h+='<div class="hint"><button class="btn ghost" onclick="playAudio()">▶ ouvir a fala</button></div>';
+    if(r.status==='playing'&&g>=2)h+='<div class="hint"><button class="btn ghost" onclick="playAudio()">▶ ouvir a fala original</button></div>';
     return h+searchBox(m);
   }
   if(m==='ability'){
-    const ab=(t.abilities&&t.abilities[r.abIdx||0])||{name:'?',key:'?',iconUrl:''};
+    const ab=(t.abilities&&t.abilities[r.abIdx||0])||{key:'?',iconUrl:''};
+    const abName=locAbility(t,r.abIdx||0);
     let h='<div class="abilitybox">'+img(CDN+(ab.iconUrl||''),(S.opts.gray?'gray ':'')+(S.opts.rot?'rot':''))
-    +'<div class="hint">tecla '+ab.key+' · '+(r.guesses.length>=3?'<b>'+ab.name+'</b>':'nome oculto até 3 erros')+'</div></div>'
+    +'<div class="hint">tecla '+ab.key+' · '+(r.guesses.length>=3?'<b>'+abName+'</b>':'nome oculto até 3 erros')+'</div></div>'
     +'<div class="toggles"><label><input type="checkbox" '+(S.opts.gray?'checked':'')+' onchange="toggleOpt(\'gray\')"> escala de cinza</label>'
     +'<label><input type="checkbox" '+(S.opts.rot?'checked':'')+' onchange="toggleOpt(\'rot\')"> girar 180°</label></div>';
-    if(r.guesses.length>=5)h+='<div class="hint">dica · recurso: <b>'+t.resource+'</b> · região: <b>'+((t.regions||[]).join(', ')||'—')+'</b></div>';
+    if(r.guesses.length>=5)h+='<div class="hint">dica · recurso: <b>'+tr(PT_RES,t.resource)+'</b> · região: <b>'+(trList(PT_REG,t.regions).join(', ')||'—')+'</b></div>';
     return h+searchBox(m);
   }
   if(m==='emoji'){
@@ -392,8 +624,9 @@ function panel(m,r,t){
     const zoom=Math.max(1,4.2-Math.pow(r.guesses.length,1.15)*0.95);
     const skin=r.skin||(t.skins&&t.skins[0])||null;
     const url=skin?splashUrl(t.id,skin.num):portrait(t.id);
+    const skinName=skin?locSkin(t,skin.num,skin.name):'';
     return '<div class="splash" style="background-image:url(\''+url+'\');background-size:'+(zoom*100)+'%;background-position:'+(r.fx*100)+'% '+(r.fy*100)+'%"></div>'
-    +'<div class="hint">zoom '+zoom.toFixed(2)+'x · a arte abre a cada erro'+(skin?' · skin: '+(r.guesses.length>=4?skin.name:'???')+'':'')+'</div>'
+    +'<div class="hint">zoom '+zoom.toFixed(2)+'x · a arte abre a cada erro'+(skinName?' · skin: '+(r.guesses.length>=4?skinName:'???')+'':'')+'</div>'
     +searchBox(m);
   }
   return '';
@@ -402,8 +635,10 @@ function status(m,r,t){
   if(!t||!t.id)return '';
   if(r.status==='playing')return '<div class="hint" style="margin-top:8px">restam <b>'+(S.pools[m]||[]).length+'</b> campeões nesta fila · '+r.guesses.length+' tentativa(s) nesta rodada</div>';
   const win=r.status==='won';
+  const alt=locName(t);
+  const shown=t.name+(alt&&norm(alt)!==norm(t.name)?' ('+alt+')':'');
   return '<div class="banner '+(win?'win':'')+'">'+img(portrait(t.id))
-  +'<div><b>'+(win?'Acertou! ':'Era ')+t.name+'</b><div class="hint" style="margin:0">'+(t.title||'')+' · '+(t.releaseYear||'')+' · '+((t.regions||[]).join(', ')||'—')+'</div></div>'
+  +'<div><b>'+(win?'Acertou! ':'Era ')+shown+'</b><div class="hint" style="margin:0">'+locTitle(t)+' · '+(t.releaseYear||'')+' · '+(trList(PT_REG,t.regions).join(', ')||'—')+'</div></div>'
   +'<span class="sp"></span><button class="btn" onclick="nextRound(\''+m+'\')">Próximo campeão</button></div>';
 }
 function howtoBlock(){
@@ -413,83 +648,17 @@ function howtoBlock(){
   +'<details '+(S.opts.howto.cycle?'open':'')+' ontoggle="howto(\'cycle\',this.open)"><summary>Modo infinito</summary>'
   +'<p>Cada desafio tem uma fila embaralhada própria. Acertar (ou desistir) retira o campeão da fila. Quando a fila de um desafio zera, ele conta como concluído. Ao concluir os 5, todos os campeões voltam e o ciclo avança.</p></details></section>';
 }
-function publishBlock(){
-  return '<section class="block" id="publicar"><h2>Publicar e mandar pros amigos</h2>'
-  +'<div class="sub2">este site é um arquivo único: baixe e publique de graça em qualquer hospedagem estática</div>'
-  +'<details '+(S.opts.howto.publish?'open':'')+' ontoggle="howto(\'publish\',this.open)"><summary>Passo a passo (2 minutos, grátis)</summary>'
-  +'<ol>'
-  +'<li>Clique em <code>Baixar index.html</code> no rodapé (ou em <code>Ver código</code> para copiar e colar num arquivo com esse nome).</li>'
-  +'<li>Entre em <code>app.netlify.com/drop</code> e arraste o arquivo para a página — sai um link pronto na hora.</li>'
-  +'<li>Alternativas gratuitas e permanentes: <code>pages.cloudflare.com</code>, <code>vercel.com</code> ou GitHub Pages (crie um repositório, suba o <code>index.html</code>, ative Pages em Settings).</li>'
-  +'<li>Mande o link no grupo. Funciona no celular; no navegador dá para "adicionar à tela de início" e fica igual a um app.</li>'
-  +'</ol>'
-  +'<p>Sem servidor, sem banco de dados: cada amigo tem o próprio progresso salvo no navegador dele. Precisa de internet porque os dados e as artes vêm de CDN pública.</p></details>'
-  +'<details '+(S.opts.howto.personal?'open':'')+' ontoggle="howto(\'personal\',this.open)"><summary>Trocar nome, autor e cores</summary>'
-  +'<p>No topo do código existem duas linhas fáceis: <code>const SITE=\'...\'</code> e <code>const AUTHOR=\'...\'</code>. Mude o texto, salve e publique. As cores ficam nas variáveis <code>--gold</code>, <code>--teal</code> e <code>--bg</code> no começo do CSS.</p></details></section>';
-}
 function statsBlock(){
   const s=S.stats;
   const box=(k,v)=>'<div class="stat"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';
-  return '<section class="block" id="estatisticas"><h2>Estatísticas</h2><div class="sub2">salvas neste dispositivo</div>'
+  return '<section class="block" id="estatisticas" style="margin-top:12px"><h2>Estatísticas</h2><div class="sub2">salvas neste dispositivo</div>'
   +'<div class="statgrid">'+box('resolvidos',s.solved)+box('sequência',s.streak)+box('melhor',s.best)
   +box('tentativas',s.guesses)+box('desistências',s.skips)+box('ciclos',S.cycle)+'</div></section>';
 }
 function footer(){
   return '<footer><div class="fbrand">'+emblem(24)+' '+SITE+'</div>'
   +'<div class="fcredit">criado por <b>'+AUTHOR+'</b></div>'
-  +'<div class="fbtns"><button class="btn" onclick="baixar()">Baixar index.html</button>'
-  +'<button class="btn ghost" onclick="mostrarCodigo()">Ver código</button>'
-  +'<button class="btn ghost" onclick="resetAll()">Reiniciar progresso</button></div>'
-  +'<div id="codigo"></div>'
-  +'<div class="fine">projeto de fã, sem vínculo com a Riot Games. League of Legends e Riot Games são marcas da Riot Games, Inc.<br>'
-  +'dados e arte dos campeões: Data Dragon e CommunityDragon.</div></footer>';
-}
-
-/* ---------- exportar arquivo ---------- */
-function buildFile(){
-  const clone=document.documentElement.cloneNode(true);
-  const app=clone.querySelector('#app');
-  if(app)app.innerHTML='<div class="boot">Carregando campeões…</div>';
-  const cod=clone.querySelector('#codigo');
-  if(cod){cod.innerHTML='';cod.removeAttribute('data-on');}
-  let head=clone.querySelector('head');
-  if(!head){head=document.createElement('head');clone.insertBefore(head,clone.firstChild);}
-  let t=head.querySelector('title');
-  if(!t){t=document.createElement('title');head.appendChild(t);}
-  t.textContent=SITE+' — adivinhe o campeão';
-  if(!head.querySelector('meta[charset]')){const m=document.createElement('meta');m.setAttribute('charset','utf-8');head.insertBefore(m,head.firstChild);}
-  if(!head.querySelector('meta[name="viewport"]')){const v=document.createElement('meta');v.setAttribute('name','viewport');v.setAttribute('content','width=device-width,initial-scale=1');head.appendChild(v);}
-  const d=head.querySelector('meta[name="description"]')||document.createElement('meta');
-  d.setAttribute('name','description');d.setAttribute('content',SITE+' — jogo de adivinhação de campeões de League of Legends, modo infinito, criado por '+AUTHOR);
-  if(!d.parentNode)head.appendChild(d);
-  return '<!doctype html>\n'+clone.outerHTML;
-}
-function baixar(){
-  try{
-    const blob=new Blob([buildFile()],{type:'text/html;charset=utf-8'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);a.download='index.html';
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2500);
-  }catch(e){mostrarCodigo();}
-}
-function mostrarCodigo(){
-  const d=document.getElementById('codigo');
-  if(d.dataset.on==='1'){d.innerHTML='';d.dataset.on='0';return;}
-  d.dataset.on='1';
-  d.innerHTML='<div class="hint">copie o código, cole num arquivo chamado <b>index.html</b> e abra no navegador (ou publique — veja "Publicar e mandar pros amigos").</div>'
-  +'<textarea id="ta" spellcheck="false" readonly></textarea>'
-  +'<div class="hint"><button class="btn" id="btnCopy" onclick="copiar()">copiar código</button> '
-  +'<span id="copiado"></span></div>';
-  document.getElementById('ta').value=buildFile();
-}
-function copiar(){
-  const ta=document.getElementById('ta');if(!ta)return;
-  ta.select();ta.setSelectionRange(0,ta.value.length);
-  const ok=()=>{const b=document.getElementById('btnCopy');if(b){b.textContent='copiado!';setTimeout(()=>b.textContent='copiar código',1600);}};
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(ta.value).then(ok,()=>{try{document.execCommand('copy');ok();}catch(e){}});
-  }else{try{document.execCommand('copy');ok();}catch(e){}}
+  +'<div class="fbtns"><button class="btn ghost" onclick="resetAll()">Reiniciar progresso</button></div></footer>';
 }
 
 /* ---------- bindings ---------- */
@@ -501,8 +670,16 @@ function bind(){
   const upd=()=>{
     INPUT_VAL[m]=inp.value;
     const q=norm(inp.value),guessed=new Set(S.rounds[m].guesses);
-    const list=q?CH.filter(c=>norm(c.name).includes(q)&&!guessed.has(c.id)).slice(0,8):[];
-    res.innerHTML=list.map(c=>'<button class="res" data-id="'+c.id+'">'+img(portrait(c.id))+'<span>'+c.name+'</span></button>').join('');
+    const list=q?CH.filter(c=>{
+      if(guessed.has(c.id))return false;
+      const alt=locName(c);
+      return norm(c.name).includes(q)||(alt&&norm(alt).includes(q));
+    }).slice(0,8):[];
+    res.innerHTML=list.map(c=>{
+      const alt=locName(c);
+      const extra=(alt&&norm(alt)!==norm(c.name))?'<span class="alt">'+alt+'</span>':'';
+      return '<button class="res" data-id="'+c.id+'">'+img(portrait(c.id))+'<span>'+c.name+'</span>'+extra+'</button>';
+    }).join('');
     Array.prototype.forEach.call(res.querySelectorAll('.res'),b=>b.onclick=()=>submitGuess(m,b.dataset.id));
   };
   inp.oninput=upd;upd();
@@ -536,4 +713,6 @@ function playAudio(){
   MODES.forEach(m=>{if(!S.rounds[m.id])startRound(m.id);});
   render();
 })();
-</script></div><style>:root, html, body { height: auto !important; max-height: 5000px !important; overflow-x: hidden !important; overflow-y: auto !important; background: transparent !important; } html { -webkit-text-size-adjust: 100% !important; text-size-adjust: 100% !important; } </style><script>(function() {var lastHeight = 0;var debounceTimer = null;function reportHeight() {var rect = document.body.getBoundingClientRect();var h = Math.ceil(rect.height);if (h !== lastHeight && h > 0) {lastHeight = h;window.parent.postMessage({ type: "html-sandbox-height", height: h }, "*");}}new ResizeObserver(function() {clearTimeout(debounceTimer);debounceTimer = setTimeout(reportHeight, 100);}).observe(document.body);window.addEventListener("load", function() {window.parent.postMessage({ type: "html-sandbox-ready" }, "*");});document.fonts && document.fonts.ready.then(function() {reportHeight();});})();</script></body></html>
+</script>
+</body>
+</html>
