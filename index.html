@@ -1,0 +1,539 @@
+<!doctype html>
+<html data-host-mode="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>Object.defineProperty(document, "cookie", {get: function() { return ""; },set: function() {},configurable: false});</script><script type="module">(async()=>{if(typeof FileSystemFileHandle!=="undefined"&&"createWritable"in FileSystemFileHandle.prototype)return;if(!navigator.storage?.getDirectory)return;try{const{createWorker}=await import("https://esm.sh/opfs-worker");const w=await createWorker();class W{constructor(p){this.p=p;this.c=[];this.x=false}write(d){if(this.x)throw new DOMException("closed","InvalidStateError");if(typeof d==="object"&&"type"in d&&!(d instanceof Blob)&&!(d instanceof ArrayBuffer)){if(d.type==="write")this.c.push(d.data);else if(d.type==="truncate")this.c=[];return}this.c.push(d)}async close(){if(this.x)return;const b=new Blob(this.c);await w.writeFile(this.p,new Uint8Array(await b.arrayBuffer()));this.x=true;this.c=[]}abort(){this.x=true;this.c=[]}}const pF=(h,p)=>new Proxy(h,{get:(t,k)=>k==="createWritable"?async()=>new W(p):typeof t[k]==="function"?t[k].bind(t):t[k]});const pD=(h,p)=>new Proxy(h,{get:(t,k)=>{if(k==="getFileHandle")return async(n,o)=>pF(await t.getFileHandle(n,o),(p+"/"+n).replace(//+/g,"/"));if(k==="getDirectoryHandle")return async(n,o)=>pD(await t.getDirectoryHandle(n,o),(p+"/"+n).replace(//+/g,"/"));return typeof t[k]==="function"?t[k].bind(t):t[k]}});const og=navigator.storage.getDirectory.bind(navigator.storage);navigator.storage.getDirectory=async function(){return pD(await og.call(this),"/")};}catch(e){console.warn("[OPFS]",e)}})();</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><style>:root { --host-bg: rgb(14, 18, 23); --host-fg: rgb(238, 237, 228); --host-fg-muted: rgb(162, 166, 170); --host-card: rgba(255, 255, 255, 0.04); --host-card-fg: rgb(238, 237, 228); --host-input: rgba(255, 255, 255, 0.04); --host-muted: rgba(255, 255, 255, 0.04); --host-border: rgba(255, 255, 255, 0.06); --host-border-hover: rgba(255, 255, 255, 0.12); --host-primary: rgb(18, 92, 161); --host-secondary: rgba(255, 255, 255, 0.04); --host-secondary-fg: rgb(238, 237, 228); --host-success: #22c55e; --host-error: #ef4444; } * { box-sizing: border-box; margin: 0; padding: 0; } :root, html, body { width: 100%; max-width: 100%; height: auto; overflow-x: hidden; overflow-y: visible; background: transparent; font-family: Inter, system-ui, -apple-system, sans-serif; } #sandbox-content { width: 100%; } @media (max-width: 640px) { :where(#sandbox-content svg, #sandbox-content img) { max-width: 100%; height: auto; } } </style><title>Lol Diário da Livezuda — adivinhe o campeão</title><meta name="description" content="Lol Diário da Livezuda — jogo de adivinhação de campeões de League of Legends, modo infinito, criado por caeHUNTER"></head><body><div id="sandbox-content"><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<div id="app"><div class="boot">Carregando campeões…</div></div>
+
+<style>
+#app{
+  --bg:#010a13; --bg2:#050f1b; --panel:#08131f; --panel2:#0b1a2b; --cell:#121b26;
+  --gold:#c8aa6e; --gold2:#f0d98c; --ink:#f0e6d2; --muted:#9a9483; --teal:#0ac8b9;
+  --line:rgba(200,170,110,.22); --line2:rgba(200,170,110,.42);
+  --hit:#2c6e49; --part:#8a6414;
+  max-width:700px;margin:0 auto;background:var(--bg);color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;
+  border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 18px 50px -22px rgba(0,0,0,.85)
+}
+#app *{box-sizing:border-box}
+#app .wrap{max-width:640px;margin:0 auto;padding:0 20px}
+h1,h2,h3,.brand,.dot-label{font-family:Cinzel,Georgia,serif;font-weight:600;letter-spacing:.4px}
+a{color:var(--gold2);text-decoration:none}
+.boot{padding:60px 20px;text-align:center;color:var(--gold);font-family:Cinzel,serif}
+
+.nav{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(200,170,110,.07),transparent)}
+.nav .brand{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--ink)}
+.nav .brand b{color:var(--gold)}
+.nav .brand small{display:block;font-family:Inter,sans-serif;font-size:10px;color:var(--muted);letter-spacing:.3px}
+.nav .links{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.nav a.lnk{font-size:11.5px;color:var(--muted);padding:5px 8px;border-radius:6px}
+.nav a.lnk:hover{color:var(--gold2);background:rgba(200,170,110,.08)}
+.pill{border:1px solid var(--line);background:rgba(10,20,40,.7);border-radius:999px;padding:3px 10px;font-size:11px;color:var(--gold2);white-space:nowrap}
+.pill.teal{border-color:rgba(10,200,185,.35);color:var(--teal)}
+
+.hero{padding:30px 20px 22px;text-align:center;position:relative;
+  background:radial-gradient(120% 90% at 50% 0%,rgba(10,200,185,.09),transparent 60%),
+             radial-gradient(90% 70% at 50% 0%,rgba(200,170,110,.10),transparent 65%)}
+.hero h1{margin:0 0 6px;font-size:29px;line-height:1.15}
+.hero h1 em{font-style:normal;color:var(--gold);display:block;font-size:15px;margin-top:6px;letter-spacing:2px}
+.hero p{margin:10px auto 0;max-width:470px;color:var(--muted);font-size:12.5px}
+.badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.credit-top{margin-top:12px;font-size:11px;color:var(--muted)}
+.credit-top b{color:var(--gold2);font-weight:500}
+
+.section{padding:0 20px}
+.modebar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:18px 0 12px}
+.mode{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:11px;
+  border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;font-family:inherit;
+  font-size:11px;transition:.16s;position:relative}
+.mode svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.4}
+.mode:hover{color:var(--gold2);border-color:var(--line2);transform:translateY(-1px)}
+.mode.active{background:linear-gradient(180deg,rgba(200,170,110,.9),rgba(200,170,110,.72));color:#04101c;border-color:var(--gold2);font-weight:600}
+.mode.active svg{stroke:#04101c}
+.mode .cnt{font-size:9.5px;opacity:.8}
+.mode.done::after{content:"";position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--teal)}
+
+.card{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.card + .card{margin-top:12px}
+.card h3{margin:0 0 2px;font-size:14px;color:var(--gold2)}
+.card .lead{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.hint{font-size:11px;color:var(--muted);margin:4px 0}
+.hint b{color:var(--gold2);font-weight:500}
+
+.search{display:flex;gap:6px;align-items:center;margin:10px 0 6px;flex-wrap:wrap}
+.search input{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;
+  padding:9px 11px;color:var(--ink);font-size:13px;outline:none;font-family:inherit;transition:.16s}
+.search input::placeholder{color:#6f6a5c}
+.search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,170,110,.12)}
+.btn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#08131f;border:none;border-radius:9px;
+  padding:9px 13px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--gold2);font-weight:400}
+.btn.ghost:hover{border-color:var(--line2);background:rgba(200,170,110,.08)}
+.results{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.res{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;
+  padding:5px 7px;color:var(--ink);cursor:pointer;text-align:left;font-size:12px;font-family:inherit;transition:.14s}
+.res:hover{border-color:var(--gold);transform:translateX(2px)}
+.res img{width:24px;height:24px;border-radius:5px;object-fit:cover}
+
+.grid{display:grid;grid-template-columns:106px 54px 86px 90px 56px 48px 102px 42px;gap:4px;margin-top:8px}
+.head>div{font-size:9.5px;color:var(--muted);text-align:center;padding:2px;text-transform:uppercase;letter-spacing:.4px}
+.cell{background:var(--cell);border-radius:6px;min-height:46px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:3px;font-size:10.5px;text-align:center;gap:2px;color:#cdbe91;animation:pop .22s ease}
+.cell.hit{background:var(--hit);color:#eaf7ef;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.cell.part{background:var(--part);color:#fff6e0}
+.cell .arrow{font-size:12px;line-height:1;opacity:.9}
+.champ{background:var(--bg2);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:row;align-items:center;
+  gap:6px;padding:4px;animation:pop .22s ease}
+.champ img{width:28px;height:28px;border-radius:5px;object-fit:cover;flex:none}
+.champ span{font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chipv{border-radius:4px;padding:1px 4px;display:inline-block;margin:1px;background:#222c37}
+.chipv.m{background:var(--gold2);color:#08131f;font-weight:600}
+@keyframes pop{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+
+.quotebox{background:var(--bg2);border-left:3px solid var(--gold);border-radius:8px;padding:13px;font-size:15px;
+  font-style:italic;margin:10px 0;color:var(--ink);font-family:Cinzel,serif;line-height:1.5}
+.abilitybox{display:flex;flex-direction:column;align-items:center;gap:8px;margin:12px 0}
+.abilitybox img{width:92px;height:92px;border-radius:12px;border:2px solid var(--line2);background:var(--bg2);
+  box-shadow:0 0 22px -8px rgba(10,200,185,.5)}
+.abilitybox img.gray{filter:grayscale(1)}
+.abilitybox img.rot{transform:rotate(180deg)}
+.emojis{font-size:34px;letter-spacing:9px;text-align:center;margin:14px 0;line-height:1.35}
+.splash{width:100%;aspect-ratio:16/9;background-color:var(--bg2);background-repeat:no-repeat;background-position:50% 50%;
+  border-radius:10px;border:1px solid var(--line)}
+.toggles{display:flex;gap:12px;font-size:11px;color:var(--muted);align-items:center;margin:6px 0}
+.toggles label{display:flex;gap:5px;align-items:center;cursor:pointer}
+
+.banner{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+  padding:10px;margin-top:10px;flex-wrap:wrap;animation:pop .28s ease}
+.banner.win{border-color:rgba(10,200,185,.5);background:linear-gradient(180deg,rgba(10,200,185,.1),var(--bg2))}
+.banner img{width:42px;height:42px;border-radius:8px;object-fit:cover;border:1px solid var(--line)}
+.banner b{font-size:14px;font-family:Cinzel,serif;color:var(--gold2)}
+.banner .sp{margin-left:auto}
+
+.dots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.dot{border:1px solid var(--line);border-radius:9px;padding:7px 4px;text-align:center;background:var(--bg2)}
+.dot.on{border-color:rgba(10,200,185,.55);background:linear-gradient(180deg,rgba(10,200,185,.14),var(--bg2))}
+.dot .dot-label{font-size:10px;color:var(--muted)}
+.dot.on .dot-label{color:var(--teal)}
+.bar{height:6px;border-radius:999px;background:var(--cell);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--teal));transition:width .3s}
+
+.celebrate{border:1px solid var(--gold);border-radius:12px;padding:12px;margin:0 0 12px;display:flex;gap:10px;
+  align-items:center;flex-wrap:wrap;background:linear-gradient(180deg,rgba(200,170,110,.16),var(--bg2));animation:pop .3s ease}
+.celebrate b{font-family:Cinzel,serif;color:var(--gold2)}
+
+section.block{padding:22px 20px 0}
+section.block h2{font-size:16px;margin:0 0 4px;color:var(--ink)}
+section.block .sub2{font-size:11.5px;color:var(--muted);margin-bottom:10px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-bottom:6px}
+details[open]{border-color:var(--line2)}
+summary{cursor:pointer;font-size:12.5px;color:var(--gold2);list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-size:14px}
+details[open] summary::after{content:"–"}
+details p{margin:8px 0 0;font-size:11.5px;color:var(--muted)}
+details ol{margin:8px 0 0;padding-left:18px;font-size:11.5px;color:var(--muted)}
+details li{margin-bottom:5px}
+details code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--gold2)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px;text-align:center}
+.stat .k{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat .v{font-size:19px;font-family:Cinzel,serif;color:var(--gold2);margin-top:3px}
+#codigo{margin-top:10px}
+#codigo textarea{width:100%;height:180px;background:var(--bg2);color:#cdbe91;border:1px solid var(--line);border-radius:9px;padding:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;resize:vertical}
+
+footer{margin-top:24px;border-top:1px solid var(--line);padding:18px 20px 22px;text-align:center;
+  background:linear-gradient(0deg,rgba(200,170,110,.06),transparent)}
+footer .fbrand{font-family:Cinzel,serif;font-size:15px;color:var(--ink)}
+footer .fcredit{margin-top:6px;font-size:12px;color:var(--muted)}
+footer .fcredit b{color:var(--gold2);font-weight:600}
+footer .fine{margin-top:10px;font-size:10.5px;color:#6f6a5c;line-height:1.6}
+footer .fbtns{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.err{padding:26px 20px;color:var(--ink)}
+</style>
+
+<script>
+const CDN='https://cdn.jsdelivr.net/gh/taitran501/loldle@main/public';
+const DATA_URL=CDN+'/data/champions.json';
+const LS='lol_diario_livezuda_v1';
+const SITE='Lol Diário da Livezuda';
+const AUTHOR='caeHUNTER';
+const MODES=[
+  {id:'classic',label:'Clássico',icon:'grid'},
+  {id:'quote',label:'Citação',icon:'quote'},
+  {id:'ability',label:'Habilidade',icon:'bolt'},
+  {id:'emoji',label:'Emoji',icon:'smile'},
+  {id:'splash',label:'Splash',icon:'frame'}
+];
+const ATTRS=[
+  {k:'gender',l:'Gênero',t:'single'},
+  {k:'positions',l:'Posições',t:'set'},
+  {k:'species',l:'Espécies',t:'set'},
+  {k:'resource',l:'Recurso',t:'single'},
+  {k:'rangeType',l:'Alcance',t:'set'},
+  {k:'regions',l:'Regiões',t:'set'},
+  {k:'releaseYear',l:'Ano',t:'year'}
+];
+const GENDER={Male:'Masculino',Female:'Feminino',Other:'Outro',M:'Masculino',F:'Feminino',X:'Outro'};
+const HOWTO={
+  classic:'Cada tentativa mostra o quão perto você está do campeão secreto: verde = igual, dourado = parcial (valores em comum), escuro = errado. No ano, as setas ▲▼ indicam se o alvo é mais novo ou mais velho.',
+  quote:'Leia a fala e descubra quem disse. A cada 3 tentativas uma dica libera: região, depois posições e gênero, depois a inicial do nome. Há um botão para ouvir a fala original.',
+  ability:'Um ícone de habilidade aparece (P, Q, W, E ou R). O nome da habilidade libera após 3 erros e os atributos do campeão após 5. Você pode dificultar com escala de cinza e rotação.',
+  emoji:'Uma sequência de emojis descreve o campeão. Um emoji novo é revelado a cada tentativa, então quanto mais você erra, mais fácil fica.',
+  splash:'Um recorte aleatório da arte do campeão (com skin sorteada). A cada erro o zoom abre até revelar a arte inteira.'
+};
+
+let CH=[],BYID={},S=null,READY=false,SPLASH_FN=null,INPUT_VAL={};
+
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function fresh(){return {v:1,cycle:1,completed:[],pools:{},rounds:{},stats:{solved:0,streak:0,best:0,guesses:0,skips:0},mode:'classic',opts:{gray:false,rot:false,howto:{}},celebrate:false};}
+function loadState(){
+  try{const raw=localStorage.getItem(LS)||localStorage.getItem('loldle_infinity_v1');
+    if(raw){const p=JSON.parse(raw);if(p&&p.v===1)S=p;}}catch(e){}
+  if(!S)S=fresh();
+  if(!S.rounds)S.rounds={}; if(!S.pools)S.pools={}; if(!S.opts)S.opts={gray:false,rot:false,howto:{}};
+  if(!S.opts.howto)S.opts.howto={};
+  if(!S.stats)S.stats={solved:0,streak:0,best:0,guesses:0,skips:0};
+  if(!Array.isArray(S.completed))S.completed=[];
+}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+
+function champIdsForMode(m){
+  if(m==='quote')return CH.filter(c=>c.quote&&c.quote.text).map(c=>c.id);
+  if(m==='ability')return CH.filter(c=>c.abilities&&c.abilities.length).map(c=>c.id);
+  if(m==='emoji')return CH.filter(c=>c.emojis&&c.emojis.length>=3).map(c=>c.id);
+  if(m==='splash')return CH.filter(c=>c.skins&&c.skins.length).map(c=>c.id);
+  return CH.map(c=>c.id);
+}
+function ensurePool(m){
+  const cur=S.rounds[m];
+  if(!S.pools[m]||S.pools[m].length===0){
+    let ids=champIdsForMode(m);
+    if(cur&&cur.status==='playing')ids=ids.filter(i=>i!==cur.target);
+    S.pools[m]=shuffle(ids);
+  }
+}
+function ensureAllPools(){MODES.forEach(m=>ensurePool(m.id));}
+function remaining(m){ensurePool(m);return S.pools[m].length+(S.rounds[m]&&S.rounds[m].status==='playing'?1:0);}
+
+function quoteFor(c){
+  const arr=(c.quotes||[]).filter(q=>q.text&&q.text.length>14&&!/\b(laughs|grunts|snarls|gasps|groans|sighs|yells|roars|chuckles|chants)\b/i.test(q.text));
+  if(arr.length&&Math.random()<0.45)return arr[Math.floor(Math.random()*arr.length)].text;
+  return (c.quote&&c.quote.text)||(arr[0]&&arr[0].text)||'…';
+}
+function startRound(m){
+  ensurePool(m);
+  if(!S.pools[m].length)ensurePool(m);
+  const id=S.pools[m].pop(),c=BYID[id];
+  const r={target:id,guesses:[],status:'playing',fx:0.32+Math.random()*0.36,fy:0.32+Math.random()*0.36};
+  if(m==='quote')r.quote=quoteFor(c);
+  if(m==='ability')r.abIdx=Math.floor(Math.random()*(c.abilities.length||1));
+  if(m==='splash'){const sk=(c.skins||[]).filter(s=>s.num!==0);
+    r.skin=(Math.random()<0.5&&sk.length)?sk[Math.floor(Math.random()*sk.length)]:((c.skins||[])[0]||null);}
+  S.rounds[m]=r; INPUT_VAL[m]=''; save();
+}
+function onRoundEnd(m){
+  if((S.pools[m]||[]).length===0){
+    if(!S.completed.includes(m))S.completed.push(m);
+    if(S.completed.length===MODES.length){S.cycle++;S.completed=[];S.pools={};S.celebrate=true;}
+  }
+}
+function submitGuess(m,id){
+  const r=S.rounds[m];
+  if(!r||r.status!=='playing'||!id||!BYID[id]||r.guesses.includes(id))return;
+  r.guesses.push(id);S.stats.guesses++;
+  if(id===r.target){r.status='won';S.stats.solved++;S.stats.streak++;S.stats.best=Math.max(S.stats.best,S.stats.streak);onRoundEnd(m);}
+  INPUT_VAL[m]=''; save(); render();
+}
+function giveUp(m){const r=S.rounds[m];if(!r||r.status!=='playing')return;
+  r.status='lost';S.stats.skips++;S.stats.streak=0;onRoundEnd(m);save();render();}
+function nextRound(m){if(S.celebrate)S.celebrate=false;startRound(m);save();render();}
+function setMode(m){S.mode=m;if(!S.rounds[m])startRound(m);save();render();}
+function dismiss(){S.celebrate=false;save();render();}
+function resetAll(){S=fresh();ensureAllPools();MODES.forEach(x=>startRound(x.id));save();render();}
+function toggleOpt(k){S.opts[k]=!S.opts[k];save();render();}
+function howto(k,open){S.opts.howto[k]=open;save();}
+
+/* splash sources */
+function ddragon(id,n){return 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/'+id+'_'+n+'.jpg';}
+function noway(id,n){return 'https://cdn.nowaycdn.com/images/champions/splash/768x/'+id+'_'+n+'.jpg';}
+function portrait(id){return CDN+'/assets/champions/'+id+'.png';}
+function splashUrl(id,n){return (SPLASH_FN||ddragon)(id,n);}
+function probeSplash(){
+  const cands=[ddragon,noway,id=>portrait(id)];
+  let i=0;
+  const next=()=>{if(i>=cands.length)return;const f=cands[i++],im=new Image();
+    im.onload=()=>{SPLASH_FN=f;if(READY)render();}; im.onerror=next; im.src=f('Ahri',0);};
+  next();
+}
+
+/* ---------- render ---------- */
+function img(u,cls){return '<img src="'+u+'"'+(cls?' class="'+cls+'"':'')+' onerror="this.style.visibility=\'hidden\'">';}
+function icon(n){
+  const P={
+    grid:'<rect x="1.5" y="1.5" width="5.4" height="5.4" rx="1"/><rect x="9.1" y="1.5" width="5.4" height="5.4" rx="1"/><rect x="1.5" y="9.1" width="5.4" height="5.4" rx="1"/><rect x="9.1" y="9.1" width="5.4" height="5.4" rx="1"/>',
+    quote:'<path d="M3 5h4v4.2C7 11.6 5.7 13 4 13.4"/><path d="M9 5h4v4.2c0 2.4-1.3 3.8-3 4.2"/>',
+    bolt:'<path d="M9.6 1.4 3.4 9.4h4l-1 5.2 6.2-8h-4z"/>',
+    smile:'<circle cx="8" cy="8" r="6.4"/><circle cx="5.9" cy="6.4" r=".85" fill="currentColor" stroke="none"/><circle cx="10.1" cy="6.4" r=".85" fill="currentColor" stroke="none"/><path d="M5.4 9.6c.7 1.1 1.6 1.6 2.6 1.6s1.9-.5 2.6-1.6"/>',
+    frame:'<rect x="1.6" y="3" width="12.8" height="10" rx="2"/><path d="M3 11.4 6 8.2l2.3 2.3L10.6 7.4l2.8 4"/>'
+  };
+  return '<svg viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round">'+(P[n]||'')+'</svg>';
+}
+function emblem(s){
+  return '<svg width="'+(s||26)+'" height="'+(s||26)+'" viewBox="0 0 24 24" fill="none">'
+  +'<path d="M12 1.8 21.2 7v10L12 22.2 2.8 17V7z" stroke="#c8aa6e" stroke-width="1.3"/>'
+  +'<path d="M12 6.2 15.2 12 12 17.8 8.8 12z" fill="#0ac8b9" opacity=".8"/></svg>';
+}
+
+function render(){
+  const app=document.getElementById('app');
+  if(!READY){app.innerHTML='<div class="boot">Carregando campeões…</div>';return;}
+  if(!S.rounds[S.mode])startRound(S.mode);
+  ensureAllPools();
+  app.innerHTML=nav()+hero()+main()+howtoBlock()+publishBlock()+statsBlock()+footer();
+  bind();
+}
+function nav(){
+  return '<header class="nav">'
+  +'<div class="brand">'+emblem(26)+'<div><b>'+SITE+'</b><small>adivinhe o campeão · modo infinito</small></div></div>'
+  +'<nav class="links"><a class="lnk" href="#como-jogar">como jogar</a><a class="lnk" href="#publicar">compartilhar</a>'
+  +'<a class="lnk" href="#estatisticas">estatísticas</a>'
+  +'<span class="pill">ciclo '+S.cycle+'</span><span class="pill teal">'+S.completed.length+'/5 desafios</span></nav></header>';
+}
+function hero(){
+  let h='<section class="hero"><h1>'+SITE+'<em>5 desafios · 173 campeões · sem limite diário</em></h1>'
+  +'<p>Adivinhe o campeão por atributos, falas, habilidades, emojis ou arte. Complete todos os desafios e os campeões voltam para a fila — o jogo nunca acaba.</p>'
+  +'<div class="badges"><span class="pill">'+CH.length+' campeões</span><span class="pill">5 modos</span>'
+  +'<span class="pill teal">progresso salvo</span><span class="pill">criado por '+AUTHOR+'</span></div>'
+  +'<div class="credit-top">um projeto de fã, feito por <b>'+AUTHOR+'</b></div></section>';
+  if(S.celebrate){
+    h+='<div class="wrap"><div class="celebrate"><span style="font-size:20px;color:#c8aa6e">★</span>'
+    +'<div><b>Ciclo '+S.cycle+' concluído!</b><div class="hint" style="margin:0">Você completou os 5 desafios — todos os campeões foram resetados.</div></div>'
+    +'<button class="btn ghost" style="margin-left:auto" onclick="dismiss()">Fechar</button></div></div>';
+  }
+  return h;
+}
+function modebar(){
+  return '<div class="modebar">'+MODES.map(m=>{
+    const cls=(S.mode===m.id?' active':'')+(S.completed.includes(m.id)?' done':'');
+    return '<button class="mode'+cls+'" onclick="setMode(\''+m.id+'\')">'+icon(m.icon)+'<span>'+m.label+'</span><span class="cnt">'+remaining(m.id)+' restam</span></button>';
+  }).join('')+'</div>';
+}
+function main(){
+  const m=S.mode,r=S.rounds[m],t=BYID[r.target]||{};
+  let inner=panel(m,r,t)+status(m,r,t);
+  return '<div class="wrap">'+modebar()
+  +'<div class="card"><h3>Desafio · '+MODES.filter(x=>x.id===m)[0].label+'</h3>'
+  +'<div class="lead">'+HOWTO[m]+'</div>'+inner+'</div>'
+  +cycleCard()+'</div>';
+}
+function cycleCard(){
+  const pct=Math.round(S.completed.length/MODES.length*100);
+  return '<div class="card"><h3>Progresso do ciclo '+S.cycle+'</h3>'
+  +'<div class="lead">complete os 5 desafios para resetar todos os campeões e começar um novo ciclo</div>'
+  +'<div class="dots">'+MODES.map(m=>'<div class="dot'+(S.completed.includes(m.id)?' on':'')+'"><div class="dot-label">'+m.label+'</div><div class="hint" style="margin:0">'+(S.completed.includes(m.id)?'concluído':remaining(m.id)+' restam')+'</div></div>').join('')+'</div>'
+  +'<div class="bar"><i style="width:'+pct+'%"></i></div>'
+  +'<div class="hint" style="text-align:right">'+S.completed.length+' de 5 concluídos · '+pct+'%</div></div>';
+}
+function searchBox(m){
+  return '<div class="search"><input id="inp" placeholder="Digite o nome do campeão…" autocomplete="off" spellcheck="false">'
+  +'<button class="btn" id="btnGuess">Adivinhar</button><button class="btn ghost" id="btnGive">Desistir</button></div>'
+  +'<div class="results" id="results"></div>';
+}
+function panel(m,r,t){
+  if(!t||!t.id)return '';
+  if(m==='classic'){
+    let h='<div class="grid"><div class="head">'+['Campeão'].concat(ATTRS.map(a=>a.l)).map(x=>'<div>'+x+'</div>').join('')+'</div>';
+    for(const gid of r.guesses){
+      const g=BYID[gid];if(!g)continue;
+      h+='<div class="champ">'+img(portrait(g.id))+'<span>'+g.name+'</span></div>';
+      for(const a of ATTRS){
+        if(a.t==='year'){
+          const gv=g.releaseYear,tv=t.releaseYear;
+          h+='<div class="cell '+(gv===tv?'hit':(Math.abs(gv-tv)<=3?'part':'miss'))+'"><span>'+(gv||'?')+'</span>'+(gv===tv?'':'<span class="arrow">'+(tv>gv?'▲':'▼')+'</span>')+'</div>';
+        }else if(a.t==='single'){
+          const gv=g[a.k]||'—';
+          h+='<div class="cell '+(gv===t[a.k]?'hit':'miss')+'">'+(GENDER[gv]||gv)+'</div>';
+        }else{
+          const gv=g[a.k]||[],tv=t[a.k]||[];
+          const inter=gv.filter(x=>tv.includes(x));
+          h+='<div class="cell '+((inter.length===gv.length&&gv.length===tv.length)?'hit':(inter.length?'part':'miss'))+'">'
+          +(gv.map(v=>'<span class="chipv'+(tv.includes(v)?' m':'')+'">'+v+'</span>').join('')||'—')+'</div>';
+        }
+      }
+    }
+    return h+'</div>'+searchBox(m);
+  }
+  if(m==='quote'){
+    let h='<div class="quotebox">“'+(r.quote||'…')+'”</div>';const g=r.guesses.length;
+    if(g>=3)h+='<div class="hint">dica 1 · região: <b>'+((t.regions||[]).join(', ')||'—')+'</b></div>';
+    if(g>=5)h+='<div class="hint">dica 2 · posições: <b>'+((t.positions||[]).join(', ')||'—')+'</b> · gênero: <b>'+(GENDER[t.gender]||t.gender||'—')+'</b></div>';
+    if(g>=7)h+='<div class="hint">dica 3 · o nome começa com <b>'+t.name[0]+'</b> e tem '+t.name.replace(/[^A-Za-z]/g,'').length+' letras</div>';
+    if(r.status==='playing'&&g>=2)h+='<div class="hint"><button class="btn ghost" onclick="playAudio()">▶ ouvir a fala</button></div>';
+    return h+searchBox(m);
+  }
+  if(m==='ability'){
+    const ab=(t.abilities&&t.abilities[r.abIdx||0])||{name:'?',key:'?',iconUrl:''};
+    let h='<div class="abilitybox">'+img(CDN+(ab.iconUrl||''),(S.opts.gray?'gray ':'')+(S.opts.rot?'rot':''))
+    +'<div class="hint">tecla '+ab.key+' · '+(r.guesses.length>=3?'<b>'+ab.name+'</b>':'nome oculto até 3 erros')+'</div></div>'
+    +'<div class="toggles"><label><input type="checkbox" '+(S.opts.gray?'checked':'')+' onchange="toggleOpt(\'gray\')"> escala de cinza</label>'
+    +'<label><input type="checkbox" '+(S.opts.rot?'checked':'')+' onchange="toggleOpt(\'rot\')"> girar 180°</label></div>';
+    if(r.guesses.length>=5)h+='<div class="hint">dica · recurso: <b>'+t.resource+'</b> · região: <b>'+((t.regions||[]).join(', ')||'—')+'</b></div>';
+    return h+searchBox(m);
+  }
+  if(m==='emoji'){
+    const all=t.emojis||[],n=Math.min(all.length,1+r.guesses.length);
+    return '<div class="emojis">'+all.slice(0,n).join(' ')+'</div>'
+    +'<div class="hint">emoji revelados: <b>'+n+'/'+all.length+'</b></div>'+searchBox(m);
+  }
+  if(m==='splash'){
+    const zoom=Math.max(1,4.2-Math.pow(r.guesses.length,1.15)*0.95);
+    const skin=r.skin||(t.skins&&t.skins[0])||null;
+    const url=skin?splashUrl(t.id,skin.num):portrait(t.id);
+    return '<div class="splash" style="background-image:url(\''+url+'\');background-size:'+(zoom*100)+'%;background-position:'+(r.fx*100)+'% '+(r.fy*100)+'%"></div>'
+    +'<div class="hint">zoom '+zoom.toFixed(2)+'x · a arte abre a cada erro'+(skin?' · skin: '+(r.guesses.length>=4?skin.name:'???')+'':'')+'</div>'
+    +searchBox(m);
+  }
+  return '';
+}
+function status(m,r,t){
+  if(!t||!t.id)return '';
+  if(r.status==='playing')return '<div class="hint" style="margin-top:8px">restam <b>'+(S.pools[m]||[]).length+'</b> campeões nesta fila · '+r.guesses.length+' tentativa(s) nesta rodada</div>';
+  const win=r.status==='won';
+  return '<div class="banner '+(win?'win':'')+'">'+img(portrait(t.id))
+  +'<div><b>'+(win?'Acertou! ':'Era ')+t.name+'</b><div class="hint" style="margin:0">'+(t.title||'')+' · '+(t.releaseYear||'')+' · '+((t.regions||[]).join(', ')||'—')+'</div></div>'
+  +'<span class="sp"></span><button class="btn" onclick="nextRound(\''+m+'\')">Próximo campeão</button></div>';
+}
+function howtoBlock(){
+  return '<section class="block" id="como-jogar"><h2>Como jogar</h2>'
+  +'<div class="sub2">cinco desafios, três níveis de feedback e nenhum limite de tentativas</div>'
+  +MODES.map(m=>'<details '+(S.opts.howto[m.id]?'open':'')+' ontoggle="howto(\''+m.id+'\',this.open)"><summary>'+m.label+'</summary><p>'+HOWTO[m.id]+'</p></details>').join('')
+  +'<details '+(S.opts.howto.cycle?'open':'')+' ontoggle="howto(\'cycle\',this.open)"><summary>Modo infinito</summary>'
+  +'<p>Cada desafio tem uma fila embaralhada própria. Acertar (ou desistir) retira o campeão da fila. Quando a fila de um desafio zera, ele conta como concluído. Ao concluir os 5, todos os campeões voltam e o ciclo avança.</p></details></section>';
+}
+function publishBlock(){
+  return '<section class="block" id="publicar"><h2>Publicar e mandar pros amigos</h2>'
+  +'<div class="sub2">este site é um arquivo único: baixe e publique de graça em qualquer hospedagem estática</div>'
+  +'<details '+(S.opts.howto.publish?'open':'')+' ontoggle="howto(\'publish\',this.open)"><summary>Passo a passo (2 minutos, grátis)</summary>'
+  +'<ol>'
+  +'<li>Clique em <code>Baixar index.html</code> no rodapé (ou em <code>Ver código</code> para copiar e colar num arquivo com esse nome).</li>'
+  +'<li>Entre em <code>app.netlify.com/drop</code> e arraste o arquivo para a página — sai um link pronto na hora.</li>'
+  +'<li>Alternativas gratuitas e permanentes: <code>pages.cloudflare.com</code>, <code>vercel.com</code> ou GitHub Pages (crie um repositório, suba o <code>index.html</code>, ative Pages em Settings).</li>'
+  +'<li>Mande o link no grupo. Funciona no celular; no navegador dá para "adicionar à tela de início" e fica igual a um app.</li>'
+  +'</ol>'
+  +'<p>Sem servidor, sem banco de dados: cada amigo tem o próprio progresso salvo no navegador dele. Precisa de internet porque os dados e as artes vêm de CDN pública.</p></details>'
+  +'<details '+(S.opts.howto.personal?'open':'')+' ontoggle="howto(\'personal\',this.open)"><summary>Trocar nome, autor e cores</summary>'
+  +'<p>No topo do código existem duas linhas fáceis: <code>const SITE=\'...\'</code> e <code>const AUTHOR=\'...\'</code>. Mude o texto, salve e publique. As cores ficam nas variáveis <code>--gold</code>, <code>--teal</code> e <code>--bg</code> no começo do CSS.</p></details></section>';
+}
+function statsBlock(){
+  const s=S.stats;
+  const box=(k,v)=>'<div class="stat"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';
+  return '<section class="block" id="estatisticas"><h2>Estatísticas</h2><div class="sub2">salvas neste dispositivo</div>'
+  +'<div class="statgrid">'+box('resolvidos',s.solved)+box('sequência',s.streak)+box('melhor',s.best)
+  +box('tentativas',s.guesses)+box('desistências',s.skips)+box('ciclos',S.cycle)+'</div></section>';
+}
+function footer(){
+  return '<footer><div class="fbrand">'+emblem(24)+' '+SITE+'</div>'
+  +'<div class="fcredit">criado por <b>'+AUTHOR+'</b></div>'
+  +'<div class="fbtns"><button class="btn" onclick="baixar()">Baixar index.html</button>'
+  +'<button class="btn ghost" onclick="mostrarCodigo()">Ver código</button>'
+  +'<button class="btn ghost" onclick="resetAll()">Reiniciar progresso</button></div>'
+  +'<div id="codigo"></div>'
+  +'<div class="fine">projeto de fã, sem vínculo com a Riot Games. League of Legends e Riot Games são marcas da Riot Games, Inc.<br>'
+  +'dados e arte dos campeões: Data Dragon e CommunityDragon.</div></footer>';
+}
+
+/* ---------- exportar arquivo ---------- */
+function buildFile(){
+  const clone=document.documentElement.cloneNode(true);
+  const app=clone.querySelector('#app');
+  if(app)app.innerHTML='<div class="boot">Carregando campeões…</div>';
+  const cod=clone.querySelector('#codigo');
+  if(cod){cod.innerHTML='';cod.removeAttribute('data-on');}
+  let head=clone.querySelector('head');
+  if(!head){head=document.createElement('head');clone.insertBefore(head,clone.firstChild);}
+  let t=head.querySelector('title');
+  if(!t){t=document.createElement('title');head.appendChild(t);}
+  t.textContent=SITE+' — adivinhe o campeão';
+  if(!head.querySelector('meta[charset]')){const m=document.createElement('meta');m.setAttribute('charset','utf-8');head.insertBefore(m,head.firstChild);}
+  if(!head.querySelector('meta[name="viewport"]')){const v=document.createElement('meta');v.setAttribute('name','viewport');v.setAttribute('content','width=device-width,initial-scale=1');head.appendChild(v);}
+  const d=head.querySelector('meta[name="description"]')||document.createElement('meta');
+  d.setAttribute('name','description');d.setAttribute('content',SITE+' — jogo de adivinhação de campeões de League of Legends, modo infinito, criado por '+AUTHOR);
+  if(!d.parentNode)head.appendChild(d);
+  return '<!doctype html>\n'+clone.outerHTML;
+}
+function baixar(){
+  try{
+    const blob=new Blob([buildFile()],{type:'text/html;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download='index.html';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2500);
+  }catch(e){mostrarCodigo();}
+}
+function mostrarCodigo(){
+  const d=document.getElementById('codigo');
+  if(d.dataset.on==='1'){d.innerHTML='';d.dataset.on='0';return;}
+  d.dataset.on='1';
+  d.innerHTML='<div class="hint">copie o código, cole num arquivo chamado <b>index.html</b> e abra no navegador (ou publique — veja "Publicar e mandar pros amigos").</div>'
+  +'<textarea id="ta" spellcheck="false" readonly></textarea>'
+  +'<div class="hint"><button class="btn" id="btnCopy" onclick="copiar()">copiar código</button> '
+  +'<span id="copiado"></span></div>';
+  document.getElementById('ta').value=buildFile();
+}
+function copiar(){
+  const ta=document.getElementById('ta');if(!ta)return;
+  ta.select();ta.setSelectionRange(0,ta.value.length);
+  const ok=()=>{const b=document.getElementById('btnCopy');if(b){b.textContent='copiado!';setTimeout(()=>b.textContent='copiar código',1600);}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(ok,()=>{try{document.execCommand('copy');ok();}catch(e){}});
+  }else{try{document.execCommand('copy');ok();}catch(e){}}
+}
+
+/* ---------- bindings ---------- */
+function bind(){
+  const m=S.mode;
+  const inp=document.getElementById('inp');if(!inp)return;
+  const res=document.getElementById('results');
+  inp.value=INPUT_VAL[m]||'';
+  const upd=()=>{
+    INPUT_VAL[m]=inp.value;
+    const q=norm(inp.value),guessed=new Set(S.rounds[m].guesses);
+    const list=q?CH.filter(c=>norm(c.name).includes(q)&&!guessed.has(c.id)).slice(0,8):[];
+    res.innerHTML=list.map(c=>'<button class="res" data-id="'+c.id+'">'+img(portrait(c.id))+'<span>'+c.name+'</span></button>').join('');
+    Array.prototype.forEach.call(res.querySelectorAll('.res'),b=>b.onclick=()=>submitGuess(m,b.dataset.id));
+  };
+  inp.oninput=upd;upd();
+  inp.onkeydown=e=>{if(e.key==='Enter'){const f=res.querySelector('.res');if(f)submitGuess(m,f.dataset.id);}};
+  const bg=document.getElementById('btnGuess');if(bg)bg.onclick=()=>{const f=res.querySelector('.res');if(f)submitGuess(m,f.dataset.id);};
+  const bv=document.getElementById('btnGive');if(bv)bv.onclick=()=>giveUp(m);
+  inp.focus();
+}
+function playAudio(){
+  const r=S.rounds[S.mode],t=BYID[r.target];
+  const u=t&&t.quote&&t.quote.audioUrl;if(!u)return;
+  const a=new Audio(u);a.volume=0.9;a.play().catch(()=>{});
+}
+
+/* ---------- boot ---------- */
+(async()=>{
+  loadState(); probeSplash();
+  try{
+    const r=await fetch(DATA_URL);
+    if(!r.ok)throw new Error('http '+r.status);
+    CH=await r.json();
+  }catch(e){
+    document.getElementById('app').innerHTML='<div class="err"><h2 style="font-family:Cinzel,serif;color:#c8aa6e">'+SITE+'</h2>'
+    +'Não foi possível carregar os dados dos campeões.<br><span class="hint">'+e.message+'</span></div>';
+    return;
+  }
+  CH=CH.filter(c=>c&&c.id&&c.name);
+  CH.forEach(c=>BYID[c.id]=c);
+  READY=true;
+  ensureAllPools();
+  MODES.forEach(m=>{if(!S.rounds[m.id])startRound(m.id);});
+  render();
+})();
+</script></div><style>:root, html, body { height: auto !important; max-height: 5000px !important; overflow-x: hidden !important; overflow-y: auto !important; background: transparent !important; } html { -webkit-text-size-adjust: 100% !important; text-size-adjust: 100% !important; } </style><script>(function() {var lastHeight = 0;var debounceTimer = null;function reportHeight() {var rect = document.body.getBoundingClientRect();var h = Math.ceil(rect.height);if (h !== lastHeight && h > 0) {lastHeight = h;window.parent.postMessage({ type: "html-sandbox-height", height: h }, "*");}}new ResizeObserver(function() {clearTimeout(debounceTimer);debounceTimer = setTimeout(reportHeight, 100);}).observe(document.body);window.addEventListener("load", function() {window.parent.postMessage({ type: "html-sandbox-ready" }, "*");});document.fonts && document.fonts.ready.then(function() {reportHeight();});})();</script></body></html>
